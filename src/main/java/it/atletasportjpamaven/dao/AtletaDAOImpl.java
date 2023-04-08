@@ -19,25 +19,31 @@ public class AtletaDAOImpl implements AtletaDAO{
 
 	@Override
 	public List<Atleta> list() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return entityManager.createQuery("from Atleta",Atleta.class).getResultList();
+
 	}
 
 	@Override
 	public Atleta get(Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return entityManager.find(Atleta.class, id);
 	}
 
 	@Override
-	public void update(Atleta o) throws Exception {
-		// TODO Auto-generated method stub
+	public void update(Atleta atletaInstance) throws Exception {
+		if (atletaInstance == null) {
+			throw new Exception("Problema valore in input");
+		}
+		atletaInstance = entityManager.merge(atletaInstance);
 		
 	}
 
 	@Override
-	public void insert(Atleta o) throws Exception {
-		// TODO Auto-generated method stub
+	public void insert(Atleta atletaInstance) throws Exception {
+		if (atletaInstance == null) {
+			throw new Exception("Problema valore in input");
+		}
+
+		entityManager.persist(atletaInstance);
 		
 	}
 

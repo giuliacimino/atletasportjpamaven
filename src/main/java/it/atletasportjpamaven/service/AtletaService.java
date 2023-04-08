@@ -12,9 +12,9 @@ public interface AtletaService {
 
 	public Atleta caricaSingoloElemento(Long id) throws Exception;
 
-	public void aggiorna(Atleta atletaInstance) throws Exception;
+	public void aggiornaAtleta (Atleta atletaInstance) throws Exception;
 
-	public void inserisciNuovo(Atleta atletaInstance) throws Exception;
+	public void inserisciNuovoAtleta(Atleta atletaInstance) throws Exception;
 
 	public void rimuovi(Long idAtleta) throws Exception;
 

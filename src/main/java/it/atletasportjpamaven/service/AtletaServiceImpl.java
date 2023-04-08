@@ -2,10 +2,13 @@ package it.atletasportjpamaven.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import it.atletasportjpamaven.dao.AtletaDAO;
 import it.atletasportjpamaven.dao.SportDAO;
 import it.atletasportjpamaven.model.Atleta;
 import it.atletasportjpamaven.model.Sport;
+import it.atletasportjpamaven.dao.EntityManagerUtil;
 
 public class AtletaServiceImpl implements AtletaService{
 	private AtletaDAO atletaDAO;
@@ -23,26 +26,91 @@ public class AtletaServiceImpl implements AtletaService{
 
 	@Override
 	public List<Atleta> listAll() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return atletaDAO.list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
+	
 
 	@Override
 	public Atleta caricaSingoloElemento(Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return atletaDAO.get(id);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override
-	public void aggiorna(Atleta atletaInstance) throws Exception {
-		// TODO Auto-generated method stub
+	public void aggiornaAtleta(Atleta atletaInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			atletaDAO.update(atletaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+
 		
 	}
 
 	@Override
-	public void inserisciNuovo(Atleta atletaInstance) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void inserisciNuovoAtleta(Atleta atletaInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			atletaDAO.insert(atletaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override
