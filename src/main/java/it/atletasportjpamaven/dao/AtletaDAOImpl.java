@@ -62,8 +62,9 @@ public class AtletaDAOImpl implements AtletaDAO{
 
 	@Override
 	public Atleta findByIdFetchingSports(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Atleta> query = entityManager.createQuery("select a FROM Atleta a left join fetch a.sports s where a.id = :idAtleta", Atleta.class);
+		query.setParameter("idAtleta", id);
+		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
 	@Override

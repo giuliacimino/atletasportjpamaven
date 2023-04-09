@@ -22,6 +22,8 @@ public interface AtletaService {
 	
 	public void rimuoviSport(Atleta atletaEsistente, Sport sportInstance) throws Exception;
 	
+	public Atleta caricaAtletaSingoloConSports (Long id) throws Exception;
+	
 	public int sommaMedaglieVinteInSportChiusi() throws Exception;
 	
 	

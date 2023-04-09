@@ -45,6 +45,10 @@ public class AtletaSportTest {
 //			
 //			testRimuoviSport(sportServiceInstance);
 //			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
+			
+			testCollegaSportAAtletaEsistente(atletaServiceInstance, sportServiceInstance);
+			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
+
 
 
 
@@ -178,6 +182,32 @@ public class AtletaSportTest {
 	}
 	
 	//
+	private static void testCollegaSportAAtletaEsistente (AtletaService atletaServiceInstance, SportService sportServiceInstance) throws Exception{
+			System.out.println(".......testCollegaSportAAtletaEsistente inizio.............");
+
+			Sport sportEsistente = sportServiceInstance.cercaPerDescrizione("Pallavolo");
+			if (sportEsistente == null)
+				throw new RuntimeException("testCollegaSportAAtletaEsistente fallito: sport inesistente ");
+			
+			List<Atleta> listaAtleti= atletaServiceInstance.listAll();
+			if (listaAtleti.size()<1) {
+				throw new RuntimeException("non sono presenti atleti sul db.");
+			}
+
+			// mi creo un utente inserendolo direttamente su db
+			Atleta nuovoAtleta = new Atleta("Ginevra", "Ginevri", "ggg", LocalDate.of(1998, 05, 13), 5);
+			atletaServiceInstance.inserisciNuovoAtleta(nuovoAtleta);
+			if (nuovoAtleta.getId() == null)
+				throw new RuntimeException("testInserisciNuovoAtleta fallito: atleta non inserito ");
+			
+			atletaServiceInstance.aggiungiSport(nuovoAtleta, sportEsistente);
+			// per fare il test ricarico interamente l'oggetto e la relazione
+			Atleta atletaRicaricato = atletaServiceInstance.caricaAtletaSingoloConSports(nuovoAtleta.getId());
+			if (atletaRicaricato.getSports().size() != 1)
+				throw new RuntimeException("testInserisciNuovoAtleta fallito: atleta non aggiunto ");
+
+			System.out.println(".......testCollegaSportAAtletaEsistente fine.............");
+	}
 	
 	
 }

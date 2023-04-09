@@ -145,8 +145,21 @@ public class SportServiceImpl implements SportService {
 
 	@Override
 	public Sport cercaPerDescrizione(String descrizione) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			sportDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return sportDAO.findByDescrizione(descrizione);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

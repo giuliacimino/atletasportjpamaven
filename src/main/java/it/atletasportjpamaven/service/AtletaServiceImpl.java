@@ -140,7 +140,35 @@ public class AtletaServiceImpl implements AtletaService{
 
 	@Override
 	public void aggiungiSport(Atleta atletaEsistente, Sport sportInstance) throws Exception {
-		// TODO Auto-generated method stub
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// 'attacco' alla sessione di hibernate i due oggetti
+			// così jpa capisce che se è già presente quel ruolo non deve essere inserito
+			atletaEsistente = entityManager.merge(atletaEsistente);
+			sportInstance = entityManager.merge(sportInstance);
+
+			atletaEsistente.getSports().add(sportInstance);
+			// l'update non viene richiamato a mano in quanto
+			// risulta automatico, infatti il contesto di persistenza
+			// rileva che utenteEsistente ora è dirty vale a dire che una sua
+			// proprieta ha subito una modifica (vale anche per i Set ovviamente)
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+
 		
 	}
 
@@ -149,12 +177,35 @@ public class AtletaServiceImpl implements AtletaService{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	@Override
+	public Atleta caricaAtletaSingoloConSports(Long id) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return atletaDAO.findByIdFetchingSports(id);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+		
+	}
 
 	@Override
 	public int sommaMedaglieVinteInSportChiusi() throws Exception {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
 
 
 }
