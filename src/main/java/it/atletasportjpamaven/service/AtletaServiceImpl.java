@@ -177,7 +177,41 @@ public class AtletaServiceImpl implements AtletaService{
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public void rimuoviSportDaAtleta(Long idAtleta, Long idSport) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+			sportDAO.setEntityManager(entityManager);
+
+			// carico nella sessione di hibernate i due oggetti
+			// così jpa capisce che se è già presente quel ruolo non deve essere inserito
+			Atleta atletaEsistente = atletaDAO.findByIdFetchingSports(idAtleta);
+			Sport SportInstance = sportDAO.get(idSport);
+
+			atletaEsistente.getSports().remove(SportInstance);
+			// l'update non viene richiamato a mano in quanto
+			// risulta automatico, infatti il contesto di persistenza
+			// rileva che utenteEsistente ora è dirty vale a dire che una sua
+			// proprieta ha subito una modifica (vale anche per i Set ovviamente)
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+
+	}
+		
+
 	
 	@Override
 	public Atleta caricaAtletaSingoloConSports(Long id) throws Exception {
@@ -204,6 +238,8 @@ public class AtletaServiceImpl implements AtletaService{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
 
 
 

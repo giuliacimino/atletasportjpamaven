@@ -3,7 +3,6 @@ package it.atletasportjpamaven.test;
 import it.atletasportjpamaven.service.AtletaService;
 import it.atletasportjpamaven.service.MyServiceFactory;
 import it.atletasportjpamaven.service.SportService;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -46,8 +45,12 @@ public class AtletaSportTest {
 //			testRimuoviSport(sportServiceInstance);
 //			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
 			
-			testCollegaSportAAtletaEsistente(atletaServiceInstance, sportServiceInstance);
+//			testCollegaSportAAtletaEsistente(atletaServiceInstance, sportServiceInstance);
+//			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
+			
+			testScollegaAtletaDaSport(atletaServiceInstance, sportServiceInstance);
 			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
+
 
 
 
@@ -207,6 +210,45 @@ public class AtletaSportTest {
 				throw new RuntimeException("testInserisciNuovoAtleta fallito: atleta non aggiunto ");
 
 			System.out.println(".......testCollegaSportAAtletaEsistente fine.............");
+	}
+	
+	//
+	private static void testScollegaAtletaDaSport (AtletaService atletaServiceInstance, SportService sportServiceInstance) throws Exception{
+		System.out.println(".......testScollegaAtletaDaSport inizio.............");
+
+		// carico un ruolo e lo associo ad un nuovo utente
+		Sport sportEsistente = sportServiceInstance.cercaPerDescrizione("Calcio");
+		if (sportEsistente == null)
+			throw new RuntimeException("testScollegaAtletaDaSport fallito: sport inesistente ");
+
+		// mi creo un utente inserendolo direttamente su db
+		Atleta atletaNuovo = new Atleta("Maria", "Bianchi", "mmm", LocalDate.of(1999, 01, 25), 1);
+		atletaServiceInstance.inserisciNuovoAtleta(atletaNuovo);
+		if (atletaNuovo.getId() == null)
+			throw new RuntimeException("testRimuoviRuoloDaUtente fallito: utente non inserito ");
+		atletaServiceInstance.aggiungiSport(atletaNuovo, sportEsistente);
+
+		// ora ricarico il record e provo a disassociare il ruolo
+		Atleta atletaRicaricato = atletaServiceInstance.caricaAtletaSingoloConSports(atletaNuovo.getId());
+		boolean confermoSportPresente = false;
+		for (Sport sportItem : atletaRicaricato.getSports()) {
+			if (sportItem.getDescrizione().equals(sportEsistente.getDescrizione())) {
+				confermoSportPresente = true;
+				break;
+			}
+		}
+
+		if (!confermoSportPresente)
+			throw new RuntimeException("testScollegaAtletaDaSport fallito: atleta e sport non associati ");
+
+		// ora provo la rimozione vera e propria ma poi forzo il caricamento per fare un
+		// confronto 'pulito'
+		atletaServiceInstance.rimuoviSportDaAtleta(atletaRicaricato.getId(), sportEsistente.getId());
+		atletaRicaricato = atletaServiceInstance.caricaAtletaSingoloConSports(atletaNuovo.getId());
+		if (!atletaRicaricato.getSports().isEmpty())
+			throw new RuntimeException("testScollegaAtletaDaSport fallito: sport ancora associato ");
+
+		System.out.println(".......testScollegaAtletaDaSport fine.............");
 	}
 	
 	
