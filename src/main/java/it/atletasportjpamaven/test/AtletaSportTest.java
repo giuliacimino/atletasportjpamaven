@@ -7,6 +7,8 @@ import it.atletasportjpamaven.service.SportService;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import it.atletasportjpamaven.dao.EntityManagerUtil;
 import it.atletasportjpamaven.model.Atleta;
 import it.atletasportjpamaven.model.Sport;
@@ -22,13 +24,23 @@ public class AtletaSportTest {
 			// inizializzo i ruoli sul db
 			initSports(sportServiceInstance);
 			
-			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+//			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+//			
+//			TestAggiornaAtleta(atletaServiceInstance);
+//			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+//
+//			TestInserisciNuovoAtleta(atletaServiceInstance);
+//			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+//			
+//			TestRimuoviAtleta(atletaServiceInstance);
+//			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
 			
-			TestAggiornaAtleta(atletaServiceInstance);
-			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
+			
+			TestAggiornaSport(sportServiceInstance);
+			System.out.println("in tabella Sport ci sono " + sportServiceInstance.listAllSport().size() + " elementi.");
 
-			TestInserisciNuovoAtleta(atletaServiceInstance);
-			System.out.println("in tabella Atleta ci sono "+atletaServiceInstance.listAll().size() + " elementi.");
+
 
 			
 			
@@ -49,18 +61,18 @@ public class AtletaSportTest {
 
 	private static void initSports(SportService sportServiceInstance) throws Exception {
 		if (sportServiceInstance.cercaPerDescrizione("Pallavolo") == null) {
-			sportServiceInstance.inserisciNuovo(new Sport("Pallavolo"));
+			sportServiceInstance.inserisciNuovoSport(new Sport("Pallavolo"));
 		}
 
 		if (sportServiceInstance.cercaPerDescrizione("Calcio") == null) {
-			sportServiceInstance.inserisciNuovo(new Sport("Calcio"));
+			sportServiceInstance.inserisciNuovoSport(new Sport("Calcio"));
 			
 		}
 		if(sportServiceInstance.cercaPerDescrizione("Basket")== null) {
-			sportServiceInstance.inserisciNuovo(new Sport("Basket"));
+			sportServiceInstance.inserisciNuovoSport(new Sport("Basket"));
 		}
 		if (sportServiceInstance.cercaPerDescrizione("Tennis")==null) {
-			sportServiceInstance.inserisciNuovo(new Sport("Tennis"));
+			sportServiceInstance.inserisciNuovoSport(new Sport("Tennis"));
 		}
 		
 		
@@ -93,4 +105,39 @@ public class AtletaSportTest {
 
 		System.out.println(".......testInserisciNuovoAtleta fine.............\"");
 	}
+	
+	//
+	private static void TestRimuoviAtleta (AtletaService atletaServiceIstance) throws Exception {
+		System.out.println(".......TestRimuoviAtleta inizio.............");
+		List<Atleta> listaAtleti= atletaServiceIstance.listAll();
+		if (listaAtleti.size()<1) {
+			throw new RuntimeException("non sono presenti atleti sul db");
+		}
+		atletaServiceIstance.rimuoviAtleta(listaAtleti.get(0).getId());
+		List<Atleta> listaAtletiDopoRimozione= atletaServiceIstance.listAll();
+		if (listaAtleti.size() == listaAtletiDopoRimozione.size()) {
+			throw new RuntimeException("test fallito: atleta non rimosso");
+
+		}
+		System.out.println(".......TestRimuoviAtleta fine.............");	
+	}
+	
+	//
+	private static void TestAggiornaSport (SportService sportServiceInstance) throws Exception{
+		System.out.println(".......TestAggiornaSport inizio.............");
+		List<Sport> listaSport = sportServiceInstance.listAllSport();
+		if (listaSport.size() < 1)
+			throw new RuntimeException("errori: non sono presenti atleti sul db.");
+		Sport sportDaAggiornare = listaSport.get(0);
+		String nuovaDescrizione = "Cricket";
+		sportDaAggiornare.setDescrizione(nuovaDescrizione);
+		sportServiceInstance.aggiornaSport(sportDaAggiornare);
+		System.out.println(sportDaAggiornare);
+		System.out.println(".......TestAggiornaSport fine.......");
+
+	}
+	
+	//
+	
+	
 }

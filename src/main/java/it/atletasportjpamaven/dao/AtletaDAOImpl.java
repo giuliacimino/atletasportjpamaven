@@ -3,6 +3,7 @@ package it.atletasportjpamaven.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import it.atletasportjpamaven.model.Atleta;
 
@@ -48,10 +49,14 @@ public class AtletaDAOImpl implements AtletaDAO{
 	}
 
 	@Override
-	public void delete(Atleta o) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void delete(Atleta atletaInstance) throws Exception {
+		if (atletaInstance == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.remove(entityManager.merge(atletaInstance));
 	}
+
+
 		
 
 	@Override

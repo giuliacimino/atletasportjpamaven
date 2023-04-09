@@ -114,8 +114,27 @@ public class AtletaServiceImpl implements AtletaService{
 	}
 
 	@Override
-	public void rimuovi(Long idAtleta) throws Exception {
-		// TODO Auto-generated method stub
+	public void rimuoviAtleta(Long idAtleta) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+		try {
+
+			entityManager.getTransaction().begin();
+
+			// injection
+			atletaDAO.setEntityManager(entityManager);
+
+			atletaDAO.delete(atletaDAO.get(idAtleta));
+
+			//commit
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			//rollback se esito negativo
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 		
 	}
 

@@ -7,15 +7,15 @@ import it.atletasportjpamaven.dao.SportDAO;
 import it.atletasportjpamaven.model.Sport;
 
 public interface SportService {
-	public List<Sport> listAll() throws Exception;
+	public List<Sport> listAllSport() throws Exception;
 
 	public Sport caricaSingoloSport(Long id) throws Exception;
 
-	public void aggiorna(Sport sportInstance) throws Exception;
+	public void aggiornaSport(Sport sportInstance) throws Exception;
 
-	public void inserisciNuovo(Sport sportInstance) throws Exception;
+	public void inserisciNuovoSport(Sport sportInstance) throws Exception;
 
-	public void rimuovi(Long idSportToRemove) throws Exception;
+	public void rimuoviSport(Long idSportToRemove) throws Exception;
 
 	public Sport cercaPerDescrizione(String descrizione) throws Exception;
 	
