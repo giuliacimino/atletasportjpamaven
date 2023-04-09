@@ -38,14 +38,22 @@ public class SportDAOImpl implements SportDAO {
 	}
 
 	@Override
-	public void insert(Sport o) throws Exception {
-		// TODO Auto-generated method stub
+	public void insert(Sport sportInstance) throws Exception {
+		if (sportInstance == null) {
+			throw new Exception("Problema valore in input");
+		}
+
+		entityManager.persist(sportInstance);
 		
 	}
 
 	@Override
-	public void delete(Sport o) throws Exception {
-		// TODO Auto-generated method stub
+	public void delete(Sport sportInstance) throws Exception {
+		if(sportInstance==null) {
+			throw new Exception("Problema antonello in input");
+		}
+		entityManager.remove(entityManager.merge(sportInstance));
+
 		
 	}
 

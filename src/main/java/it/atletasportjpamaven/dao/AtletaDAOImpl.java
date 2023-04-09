@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import it.atletasportjpamaven.model.Atleta;
+import it.atletasportjpamaven.model.Sport;
 
 public class AtletaDAOImpl implements AtletaDAO{
 	
@@ -69,6 +70,13 @@ public class AtletaDAOImpl implements AtletaDAO{
 	public int sumMedaglieVinteByAtletiWithSportChiusi() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<Atleta> findAllBySport(Sport sportInput) {
+		TypedQuery<Atleta> query = entityManager.createQuery("select a FROM Atleta a join a.sports s where s = :sport",Atleta.class);
+		query.setParameter("sport", sportInput);
+		return query.getResultList();
 	}
 	
 

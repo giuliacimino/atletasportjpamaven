@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import Exception.SportConAtletaAssociatoException;
 import it.atletasportjpamaven.dao.AtletaDAO;
 import it.atletasportjpamaven.dao.SportDAO;
 import it.atletasportjpamaven.model.Sport;
@@ -90,13 +91,55 @@ public class SportServiceImpl implements SportService {
 
 	@Override
 	public void inserisciNuovoSport (Sport sportInstance) throws Exception {
-		// TODO Auto-generated method stub
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			sportDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			sportDAO.insert(sportInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 
 	}
 
 	@Override
 	public void rimuoviSport(Long idSportToRemove) throws Exception {
-		// TODO Auto-generated method stub
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			sportDAO.setEntityManager(entityManager);
+			atletaDAO.setEntityManager(entityManager);
+			
+			if(atletaDAO.findAllBySport(sportDAO.get(idSportToRemove)).size()> 0) {
+				throw new SportConAtletaAssociatoException("problema id in input");
+			}
+
+			// eseguo quello che realmente devo fare
+			sportDAO.delete(sportDAO.get(idSportToRemove));
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		}
+
 
 	}
 
