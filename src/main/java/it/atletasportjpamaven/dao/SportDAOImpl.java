@@ -70,8 +70,10 @@ public class SportDAOImpl implements SportDAO {
 
 	@Override
 	public List<Sport> findMistakes(){
-		// TODO Auto-generated method stub
-		return null;
+		TypedQuery<Sport> query = entityManager
+				.createQuery("select s from Sport s where s.dataFine < s.dataInizio", Sport.class);
+		return query.getResultList();
+		
 	}
 
 

@@ -8,8 +8,9 @@ import it.atletasportjpamaven.model.Sport;
 public interface AtletaDAO extends IBaseDAO<Atleta> {
 	
 	public Atleta findByIdFetchingSports(Long id);
-	public int sumMedaglieVinteByAtletiWithSportChiusi ();
+	public Long sumMedaglieVinteByAtletiWithSportChiusi ();
 	public List<Atleta> findAllBySport (Sport sportInput);
+	public List<Atleta> findByDescrizione (String descrizione);
 	
 
 }

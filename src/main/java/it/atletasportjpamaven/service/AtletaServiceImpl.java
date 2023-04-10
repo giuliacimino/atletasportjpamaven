@@ -232,12 +232,44 @@ public class AtletaServiceImpl implements AtletaService{
 		}
 		
 	}
+	
+	@Override
+	public List<Atleta> listaAtletiDiUnoSport(String descrizione) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			atletaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return atletaDAO.findByDescrizione(descrizione);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
 
 	@Override
-	public int sommaMedaglieVinteInSportChiusi() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public Long sommaMedaglieVinteInSportChiusi() throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+		try {
+			// injection
+			atletaDAO.setEntityManager(entityManager);
+
+			// esecuzione metodo
+			return atletaDAO.sumMedaglieVinteByAtletiWithSportChiusi();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
+
 
 
 

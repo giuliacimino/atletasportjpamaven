@@ -26,7 +26,9 @@ public interface AtletaService {
 	
 	public Atleta caricaAtletaSingoloConSports (Long id) throws Exception;
 	
-	public int sommaMedaglieVinteInSportChiusi() throws Exception;
+	public List<Atleta> listaAtletiDiUnoSport (String descrizione) throws Exception;
+	
+	public Long sommaMedaglieVinteInSportChiusi() throws Exception;
 	
 	
 
