@@ -143,23 +143,16 @@ public class AtletaServiceImpl implements AtletaService{
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
-			// questo è come il MyConnection.getConnection()
 			entityManager.getTransaction().begin();
 
 			// uso l'injection per il dao
 			atletaDAO.setEntityManager(entityManager);
 
-			// 'attacco' alla sessione di hibernate i due oggetti
-			// così jpa capisce che se è già presente quel ruolo non deve essere inserito
 			atletaEsistente = entityManager.merge(atletaEsistente);
 			sportInstance = entityManager.merge(sportInstance);
 
 			atletaEsistente.getSports().add(sportInstance);
-			// l'update non viene richiamato a mano in quanto
-			// risulta automatico, infatti il contesto di persistenza
-			// rileva che utenteEsistente ora è dirty vale a dire che una sua
-			// proprieta ha subito una modifica (vale anche per i Set ovviamente)
-
+			
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();
@@ -173,11 +166,6 @@ public class AtletaServiceImpl implements AtletaService{
 	}
 
 	@Override
-	public void rimuoviSport(Atleta atletaEsistente, Sport sportInstance) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void rimuoviSportDaAtleta(Long idAtleta, Long idSport) throws Exception {
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
@@ -189,17 +177,11 @@ public class AtletaServiceImpl implements AtletaService{
 			atletaDAO.setEntityManager(entityManager);
 			sportDAO.setEntityManager(entityManager);
 
-			// carico nella sessione di hibernate i due oggetti
-			// così jpa capisce che se è già presente quel ruolo non deve essere inserito
 			Atleta atletaEsistente = atletaDAO.findByIdFetchingSports(idAtleta);
 			Sport SportInstance = sportDAO.get(idSport);
 
 			atletaEsistente.getSports().remove(SportInstance);
-			// l'update non viene richiamato a mano in quanto
-			// risulta automatico, infatti il contesto di persistenza
-			// rileva che utenteEsistente ora è dirty vale a dire che una sua
-			// proprieta ha subito una modifica (vale anche per i Set ovviamente)
-
+	
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();

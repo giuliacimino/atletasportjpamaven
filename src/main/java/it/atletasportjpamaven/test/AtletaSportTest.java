@@ -261,7 +261,7 @@ public class AtletaSportTest {
 			throw new RuntimeException("errore: non sono presenti atleti che praticano questo sport");
 		}
 		Atleta atletaEsistente = listaAtleti.get(0);
-		atletaServiceInstance.rimuoviSport(atletaEsistente, sportEsistente);
+		atletaServiceInstance.rimuoviSportDaAtleta(atletaEsistente.getId(), sportEsistente.getId());
 		Atleta altetaRicaricato = atletaServiceInstance.caricaSingoloElemento(atletaEsistente.getId());
 //		if (altetaRicaricato.getSports().size() != 0) {
 //			throw new RuntimeException("errore: sport non scollegato");
